@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<PackageId>Fukicycle.Tool.HttpClientExtensions</PackageId>
 		<Title>Fukicycle.Tool.HttpClientExtensions</Title>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 		<Description>This library is a helper that creates requests necessary for HTTP communication. If you are having trouble with complicated settings for HTTP communication, please try using it.</Description>
 		<AssemblyName>Fukicycle.Tool.HttpClientExtensions</AssemblyName>
 		<Authors>fukicycle</Authors>
