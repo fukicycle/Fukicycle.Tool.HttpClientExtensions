@@ -83,6 +83,45 @@ namespace Fukicycle.Tool.HttpClientExtensions
         }
 
         /// <summary>
+        /// Add T item object to body.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="httpRequestMessageBuilder">HttpRequestMessageBuilder</param>
+        /// <param name="item">item</param>
+        /// <returns>HttpRequestMessageBuilder</returns>
+        /// <exception cref="InvalidOperationException">Thrown when other content has already been added.</exception>
+        public static HttpRequestMessageBuilder AddItemBody<T>(this HttpRequestMessageBuilder httpRequestMessageBuilder, T item)
+        {
+            if (httpRequestMessageBuilder._message.Content != null)
+            {
+                throw new InvalidOperationException($"Content has already been added. Added content type:{httpRequestMessageBuilder._message.Content.Headers.ContentType?.MediaType}");
+            }
+            HttpContent content = new StringContent(System.Text.Json.JsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
+            httpRequestMessageBuilder._message.Content = content;
+            return httpRequestMessageBuilder;
+        }
+
+        /// <summary>
+        /// Add T item object to body.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="httpRequestMessageBuilder">HttpRequestMessageBuilder</param>
+        /// <param name="item">item</param>
+        /// <param name="jsonSerializerOptions">System.Text.Json.JsonSerializerOptions</param>
+        /// <returns>HttpRequestMessageBuilder</returns>
+        /// <exception cref="InvalidOperationException">wn when other content has already been added.</exception>
+        public static HttpRequestMessageBuilder AddItemBody<T>(this HttpRequestMessageBuilder httpRequestMessageBuilder, T item, System.Text.Json.JsonSerializerOptions jsonSerializerOptions)
+        {
+            if (httpRequestMessageBuilder._message.Content != null)
+            {
+                throw new InvalidOperationException($"Content has already been added. Added content type:{httpRequestMessageBuilder._message.Content.Headers.ContentType?.MediaType}");
+            }
+            HttpContent content = new StringContent(System.Text.Json.JsonSerializer.Serialize(item, options: jsonSerializerOptions), Encoding.UTF8, "application/json");
+            httpRequestMessageBuilder._message.Content = content;
+            return httpRequestMessageBuilder;
+        }
+
+        /// <summary>
         /// Add raw http content.
         /// </summary>
         /// <param name="httpRequestMessageBuilder">HttpRequestMessageBuilder</param>
