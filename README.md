@@ -18,11 +18,20 @@ dotnet add package Fukicycle.Tool.HttpClientExtensions --version <version>
 ```
 
 ### 2. Create your app.
-```
+```cs
 HttpClient client = new HttpClient() { BaseAddress = new Uri("http://localhost:8001/") };  // 👈 set your base address!
+Item item = new Item
+{
+    Id = 1,
+    Name = "New item",
+    CreateAt = DateTime.Now
+};
 HttpRequestMessage httpRequestMessage = new HttpRequestMessageBuilder()                    // 👈 create request message builder!
+                                            .AddHeader("some-header","header-value")       // 👈 set your header.
+                                            .AddAuthorizationHeader("Bearer",token)        // 👈 set your authorization header.
                                             .AddHttpMethod(HttpMethod.Post)                // 👈 set your HttpMethod
-                                            .AddEndPoint("/get/times")                     // 👈 set your end point for api or http request.
+                                            .AddEndPoint("/post/item")                     // 👈 set your end point for api or http request.
+                                            .AddItemBody<Item>(item)                       // 👈 set your body.
                                             .Build();                                      // 👈 create HttpRequestMessage
 HttpResponseResult responseResult = await new RequestHelper(client).SendAsync(httpRequestMessage); // 👈 Passing your http client. After that, you can send request!
 // 👇 Now, we supported bellow contents.
@@ -30,6 +39,33 @@ Console.WriteLine(responseResult.JsonBody);
 Console.WriteLine(responseResult.Message);
 Console.WriteLine(responseResult.StatusCode);
 ```
+
+
+if you uses DI, you can use bellow.
+```cs
+//Program.cs
+builder.Services.AddScoped<RequestHelper>();
+
+//Some services
+public class SomeService
+{
+    private readonly RequestHelper _requestHelper;
+
+    public SomeService(RequestHelper requestHelper)
+    {
+        _requestHelper = requestHelper;
+    }
+
+    public Task<Item> GetItemAsync()
+    {
+        //setup your request message...
+        HttpRequestMessage httpRequestMessage = ...
+        var result = await _requestHelper.SendAsync(httpRequestMessage);
+        return System.Text.Json.JsonSerializer.Desirialize<Item>(result.JsonBody);
+    }
+}
+```
+
 ## Contributing
 Pull requests and stars are always welcome.
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create.   
